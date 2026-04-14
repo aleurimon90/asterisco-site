@@ -743,12 +743,47 @@ function toggleFaq(el) {
   el.closest('.faq-item').classList.toggle('open');
 }
 
-function submitLead() {
-  const nombre = document.getElementById('lead-nombre').value.trim();
-  const email  = document.getElementById('lead-email').value.trim();
+async function submitLead() {
+  const nombre   = document.getElementById('lead-nombre').value.trim();
+  const email    = document.getElementById('lead-email').value.trim();
+  const empresa  = document.getElementById('lead-empresa').value.trim();
+  const cargo    = document.getElementById('lead-cargo').value;
+  const venta    = document.getElementById('lead-venta').value;
+  const sector   = document.getElementById('sector').value;
+  const revenue  = document.getElementById('revenue').value;
+  const ebitda   = document.getElementById('ebitda').value;
+
   if (!nombre || !email) { alert('Por favor ingresa tu nombre y correo electrónico.'); return; }
-  document.getElementById('lead-form').style.display = 'none';
-  document.getElementById('success-msg').style.display = 'block';
+
+  const btn = document.querySelector('.btn-submit');
+  btn.textContent = 'Enviando...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('https://formspree.io/f/mojyvlbk', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        nombre, email, empresa, cargo,
+        interes_venta: venta,
+        sector,
+        ingresos_anuales: revenue,
+        ebitda_anual: ebitda
+      })
+    });
+    if (res.ok) {
+      document.getElementById('lead-form').style.display = 'none';
+      document.getElementById('success-msg').style.display = 'block';
+    } else {
+      alert('Hubo un error al enviar. Por favor intenta de nuevo.');
+      btn.textContent = 'Enviar y recibir mi reporte';
+      btn.disabled = false;
+    }
+  } catch(e) {
+    alert('Error de conexión. Por favor intenta de nuevo.');
+    btn.textContent = 'Enviar y recibir mi reporte';
+    btn.disabled = false;
+  }
 }
 
 calc();
