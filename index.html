@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asterisco — ¿Cuánto vale tu empresa?</title>
+<meta name="description" content="Calcula gratis el valor de tu empresa con los métodos que usan los profesionales: múltiplos de mercado, DCF y valor en libros. Para emprendedores y empresarios de habla hispana.">
+<meta name="keywords" content="valuación de empresas, cuánto vale mi empresa, valuación gratis, múltiplos EBITDA, valuación México, vender empresa">
+<meta property="og:title" content="Asterisco — ¿Cuánto vale tu empresa?">
+<meta property="og:description" content="Herramienta gratuita de valuación empresarial para emprendedores y empresarios.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f0f0f;
+    --ink2: #444;
+    --ink3: #888;
+    --paper: #fafaf7;
+    --surface: #f3f3ee;
+    --border: #e0e0d8;
+    --accent: #1a1a1a;
+    --teal: #0b6e5f;
+    --teal-light: #e6f2f0;
+    --teal-mid: #1d9e75;
+    --amber: #b45309;
+    --amber-light: #fef3c7;
+    --red-light: #fef2f2;
+    --red: #991b1b;
+    --radius: 10px;
+    --radius-lg: 16px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(250,250,247,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 56px;
+  }
+  .nav-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: -0.5px;
+  }
+  .nav-logo span { color: var(--teal); }
+  .nav-cta {
+    font-size: 13px; font-weight: 500;
+    background: var(--ink); color: var(--paper);
+    border: none; border-radius: 6px;
+    padding: 7px 16px; cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+  .nav-cta:hover { opacity: 0.8; }
+
+  /* HERO */
+  .hero {
+    max-width: 760px; margin: 0 auto;
+    padding: 80px 2rem 60px;
+    text-align: center;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 500; letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: var(--teal-light); color: var(--teal);
+    border: 1px solid #b2d8d0;
+    border-radius: 100px; padding: 4px 12px;
+    margin-bottom: 28px;
+  }
+  .hero-badge::before {
+    content: ''; width: 6px; height: 6px;
+    background: var(--teal-mid); border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100%{ opacity:1; transform:scale(1); }
+    50%{ opacity:0.5; transform:scale(1.4); }
+  }
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 6vw, 60px);
+    line-height: 1.08;
+    letter-spacing: -1.5px;
+    color: var(--ink);
+    margin-bottom: 20px;
+  }
+  h1 em { font-style: italic; color: var(--teal); }
+  .hero-sub {
+    font-size: 18px; color: var(--ink2); font-weight: 300;
+    max-width: 540px; margin: 0 auto 36px;
+    line-height: 1.6;
+  }
+  .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--ink); color: var(--paper);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 500;
+    border: none; border-radius: var(--radius);
+    padding: 13px 28px; cursor: pointer;
+    transition: transform 0.15s, opacity 0.15s;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent; color: var(--ink2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 400;
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 13px 28px; cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-secondary:hover { border-color: var(--ink3); background: var(--surface); }
+
+  /* STATS */
+  .stats {
+    display: flex; justify-content: center; gap: 48px;
+    padding: 32px 2rem;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    flex-wrap: wrap;
+  }
+  .stat { text-align: center; }
+  .stat-n {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px; color: var(--ink); line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-l { font-size: 13px; color: var(--ink3); }
+
+  /* HOW */
+  .how {
+    max-width: 900px; margin: 0 auto;
+    padding: 72px 2rem;
+  }
+  .section-label {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink3);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(28px, 4vw, 40px);
+    letter-spacing: -0.8px; line-height: 1.15;
+    margin-bottom: 48px;
+  }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border); border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .step {
+    background: var(--paper);
+    padding: 28px 24px;
+  }
+  .step-n {
+    font-family: 'DM Serif Display', serif;
+    font-size: 36px; color: var(--border);
+    line-height: 1; margin-bottom: 16px;
+  }
+  .step h3 { font-size: 15px; font-weight: 500; margin-bottom: 8px; }
+  .step p { font-size: 14px; color: var(--ink2); line-height: 1.55; }
+
+  /* CALCULATOR */
+  .calc-section {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 72px 2rem;
+  }
+  .calc-inner { max-width: 860px; margin: 0 auto; }
+  .calc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 40px;
+  }
+  @media(max-width: 640px){ .calc-grid{ grid-template-columns:1fr; } }
+  .card {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+  }
+  .card-title {
+    font-size: 13px; font-weight: 500; letter-spacing: 0.02em;
+    color: var(--ink2); margin-bottom: 16px;
+    padding-bottom: 12px; border-bottom: 1px solid var(--border);
+  }
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block; font-size: 12px; color: var(--ink3);
+    margin-bottom: 5px; font-weight: 400;
+  }
+  .field input, .field select {
+    width: 100%; padding: 9px 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--border); border-radius: 8px;
+    outline: none; transition: border-color 0.15s;
+    appearance: none;
+  }
+  .field input:focus, .field select:focus { border-color: var(--teal); }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .results-card {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    grid-column: 1 / -1;
+  }
+  .tabs {
+    display: flex; gap: 4px; margin-bottom: 20px;
+    background: var(--surface); border-radius: 8px; padding: 4px;
+  }
+  .tab {
+    flex: 1; padding: 7px 10px; font-size: 13px; font-weight: 400;
+    font-family: 'DM Sans', sans-serif;
+    background: transparent; border: none; border-radius: 6px;
+    cursor: pointer; color: var(--ink3); transition: all 0.15s;
+  }
+  .tab.active {
+    background: var(--paper); color: var(--ink);
+    font-weight: 500;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .metric-row {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    margin-bottom: 12px;
+  }
+  .metric {
+    background: var(--surface); border-radius: 8px;
+    padding: 14px 12px; text-align: center;
+  }
+  .metric-val {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px; color: var(--ink); line-height: 1.1;
+    margin-bottom: 4px;
+  }
+  .metric-lbl { font-size: 11px; color: var(--ink3); line-height: 1.3; }
+  .result-highlight {
+    background: var(--teal-light);
+    border: 1px solid #b2d8d0;
+    border-radius: 10px; padding: 20px;
+    text-align: center; margin-top: 4px;
+  }
+  .result-highlight .rh-val {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px; color: var(--teal); line-height: 1;
+    margin-bottom: 6px;
+  }
+  .result-highlight .rh-lbl { font-size: 13px; color: var(--teal); opacity: 0.8; }
+  .consensus-row {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
+    margin-bottom: 12px;
+  }
+  .consensus-item {
+    text-align: center; padding: 12px 8px;
+    background: var(--surface); border-radius: 8px;
+  }
+  .consensus-item .cv {
+    font-family: 'DM Serif Display', serif;
+    font-size: 16px; color: var(--ink);
+  }
+  .consensus-item .cl { font-size: 11px; color: var(--ink3); margin-top: 3px; }
+  .note-text {
+    font-size: 11px; color: var(--ink3); margin-top: 14px; line-height: 1.5;
+  }
+  .dcf-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+
+  /* LEAD FORM */
+  .lead-section { max-width: 620px; margin: 0 auto; padding: 72px 2rem; }
+  .lead-card {
+    background: var(--ink); color: var(--paper);
+    border-radius: var(--radius-lg); padding: 36px;
+  }
+  .lead-card .card-title { color: rgba(255,255,255,0.5); border-color: rgba(255,255,255,0.12); }
+  .lead-card h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px; line-height: 1.15;
+    letter-spacing: -0.5px; margin-bottom: 10px;
+  }
+  .lead-card p { font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 24px; line-height: 1.6; }
+  .lead-card label { color: rgba(255,255,255,0.5); }
+  .lead-card input, .lead-card select {
+    background: rgba(255,255,255,0.07);
+    border-color: rgba(255,255,255,0.15);
+    color: var(--paper);
+  }
+  .lead-card input::placeholder { color: rgba(255,255,255,0.25); }
+  .lead-card input:focus, .lead-card select:focus { border-color: var(--teal-mid); }
+  .lead-card select option { background: #1a1a1a; color: var(--paper); }
+  .btn-submit {
+    width: 100%; padding: 13px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 500;
+    background: var(--teal-mid); color: white;
+    border: none; border-radius: var(--radius); cursor: pointer;
+    transition: opacity 0.15s, transform 0.15s;
+    margin-top: 4px;
+  }
+  .btn-submit:hover { opacity: 0.88; transform: translateY(-1px); }
+  .success-msg {
+    display: none; text-align: center; padding: 20px 0;
+  }
+  .success-msg .sm-icon {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--teal-mid); margin: 0 auto 12px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .success-msg h3 { font-family: 'DM Serif Display', serif; font-size: 22px; margin-bottom: 8px; }
+  .success-msg p { font-size: 14px; color: rgba(255,255,255,0.6); }
+  .privacy-note { font-size: 11px; color: rgba(255,255,255,0.3); margin-top: 12px; text-align: center; }
+
+  /* FAQ */
+  .faq-section { max-width: 680px; margin: 0 auto; padding: 72px 2rem; }
+  .faq-item { border-bottom: 1px solid var(--border); padding: 18px 0; }
+  .faq-q {
+    font-size: 15px; font-weight: 500; cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 12px;
+  }
+  .faq-q::after { content: '+'; font-size: 20px; color: var(--ink3); flex-shrink: 0; transition: transform 0.2s; }
+  .faq-item.open .faq-q::after { transform: rotate(45deg); }
+  .faq-a { font-size: 14px; color: var(--ink2); line-height: 1.65; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.2s; }
+  .faq-item.open .faq-a { max-height: 300px; padding-top: 12px; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 2rem;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 12px;
+    max-width: 1100px; margin: 0 auto;
+  }
+  .footer-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px; color: var(--ink); text-decoration: none;
+  }
+  .footer-logo span { color: var(--teal); }
+  footer p { font-size: 12px; color: var(--ink3); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">asterisco<span>*</span></a>
+  <a href="#calcular" class="nav-cta">Calcular ahora</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge">Herramienta gratuita</div>
+  <h1>¿Cuánto vale<br><em>tu empresa</em>, en realidad?</h1>
+  <p class="hero-sub">Usa los mismos métodos que usan los bancos de inversión y fondos de capital privado. Sin costo, sin registro previo.</p>
+  <div class="hero-actions">
+    <a href="#calcular" class="btn-primary">Calcular el valor de mi empresa</a>
+    <a href="#como-funciona" class="btn-secondary">¿Cómo funciona?</a>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="stat"><div class="stat-n">3</div><div class="stat-l">Métodos de valuación</div></div>
+  <div class="stat"><div class="stat-n">8</div><div class="stat-l">Sectores calibrados</div></div>
+  <div class="stat"><div class="stat-n">100%</div><div class="stat-l">Gratuito y confidencial</div></div>
+  <div class="stat"><div class="stat-n">&lt;5 min</div><div class="stat-l">Para obtener tu estimado</div></div>
+</div>
+
+<section class="how" id="como-funciona">
+  <div class="section-label">Cómo funciona</div>
+  <h2 class="section-title">Tres métodos, un resultado claro</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-n">01</div>
+      <h3>Ingresa tus datos financieros</h3>
+      <p>Ingresos, EBITDA, utilidad neta y activos. No necesitas estados financieros auditados — un estimado razonable es suficiente para empezar.</p>
+    </div>
+    <div class="step">
+      <div class="step-n">02</div>
+      <h3>Selecciona tu sector</h3>
+      <p>Los múltiplos varían significativamente por industria. Tecnología vale más que comercio por la misma utilidad. La herramienta ajusta automáticamente.</p>
+    </div>
+    <div class="step">
+      <div class="step-n">03</div>
+      <h3>Recibe tres perspectivas</h3>
+      <p>Múltiplos de mercado, flujo de caja descontado y valor en libros. Cada método ilumina un ángulo diferente de tu empresa.</p>
+    </div>
+    <div class="step">
+      <div class="step-n">04</div>
+      <h3>Obtén tu rango de valuación</h3>
+      <p>Un consenso ponderado que combina los tres métodos, con un rango conservador y uno optimista según las condiciones de tu empresa.</p>
+    </div>
+  </div>
+</section>
+
+<section class="calc-section" id="calcular">
+  <div class="calc-inner">
+    <div class="section-label">Calculadora</div>
+    <h2 class="section-title">Calcula el valor de tu empresa</h2>
+
+    <div class="calc-grid">
+      <!-- Inputs -->
+      <div class="card">
+        <div class="card-title">Datos financieros anuales (MXN)</div>
+        <div class="field-row">
+          <div class="field">
+            <label>Ingresos totales</label>
+            <input type="number" id="revenue" value="10000000" step="100000" oninput="calc()">
+          </div>
+          <div class="field">
+            <label>EBITDA</label>
+            <input type="number" id="ebitda" value="2000000" step="50000" oninput="calc()">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Utilidad neta</label>
+            <input type="number" id="utilidad" value="1500000" step="50000" oninput="calc()">
+          </div>
+          <div class="field">
+            <label>Activos totales</label>
+            <input type="number" id="activos" value="8000000" step="100000" oninput="calc()">
+          </div>
+        </div>
+        <div class="field">
+          <label>Deuda total</label>
+          <input type="number" id="deuda" value="1000000" step="50000" oninput="calc()">
+        </div>
+      </div>
+
+      <!-- Qualitative -->
+      <div class="card">
+        <div class="card-title">Características de la empresa</div>
+        <div class="field">
+          <label>Sector</label>
+          <select id="sector" onchange="calc()">
+            <option value="manufactura">Manufactura / Industrial</option>
+            <option value="comercio">Comercio / Retail</option>
+            <option value="servicios" selected>Servicios profesionales</option>
+            <option value="tecnologia">Tecnología / SaaS</option>
+            <option value="construccion">Construcción / Inmobiliario</option>
+            <option value="alimentos">Alimentos y bebidas</option>
+            <option value="salud">Salud / Farmacéutico</option>
+            <option value="logistica">Logística / Transporte</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Años en operación</label>
+          <select id="anos" onchange="calc()">
+            <option value="0.8">Menos de 3 años</option>
+            <option value="0.9">3–5 años</option>
+            <option value="1" selected>5–10 años</option>
+            <option value="1.1">10–20 años</option>
+            <option value="1.15">Más de 20 años</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Crecimiento de ingresos (últimos 3 años)</label>
+          <select id="crecimiento" onchange="calc()">
+            <option value="0.85">Negativo o estancado</option>
+            <option value="0.95">0–5% anual</option>
+            <option value="1" selected>5–15% anual</option>
+            <option value="1.1">15–30% anual</option>
+            <option value="1.2">Más de 30% anual</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Concentración de clientes</label>
+          <select id="concentracion" onchange="calc()">
+            <option value="0.9">1 cliente representa más del 50%</option>
+            <option value="0.95">Top 3 clientes = más del 50%</option>
+            <option value="1" selected>Base diversificada</option>
+            <option value="1.05">Contratos recurrentes / SaaS</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="results-card">
+        <div class="tabs">
+          <button class="tab active" onclick="showTab('multiplos',this)">Múltiplos de mercado</button>
+          <button class="tab" onclick="showTab('dcf',this)">DCF simplificado</button>
+          <button class="tab" onclick="showTab('libros',this)">Valor en libros</button>
+          <button class="tab" onclick="showTab('resumen',this)">Resumen</button>
+        </div>
+
+        <div id="tab-multiplos" class="tab-panel">
+          <div id="mult-display"></div>
+        </div>
+        <div id="tab-dcf" class="tab-panel" style="display:none">
+          <div class="dcf-opts">
+            <div class="field">
+              <label>Tasa de crecimiento proyectada</label>
+              <select id="dcf-g" onchange="calc()">
+                <option value="0.03">3% — conservador</option>
+                <option value="0.06" selected>6% — base</option>
+                <option value="0.10">10% — optimista</option>
+                <option value="0.15">15% — alto crecimiento</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Tasa de descuento (WACC)</label>
+              <select id="dcf-r" onchange="calc()">
+                <option value="0.15">15% — bajo riesgo</option>
+                <option value="0.20" selected>20% — riesgo medio</option>
+                <option value="0.25">25% — riesgo alto</option>
+                <option value="0.30">30% — etapa temprana</option>
+              </select>
+            </div>
+          </div>
+          <div id="dcf-display"></div>
+        </div>
+        <div id="tab-libros" class="tab-panel" style="display:none">
+          <div id="libros-display"></div>
+        </div>
+        <div id="tab-resumen" class="tab-panel" style="display:none">
+          <div id="resumen-display"></div>
+        </div>
+
+        <p class="note-text">* Estimación orientativa basada en rangos de mercado para empresas de habla hispana. No sustituye un proceso de valuación formal. Los múltiplos reflejan condiciones generales de mercado y pueden variar según las características específicas de cada empresa.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LEAD CAPTURE -->
+<section class="lead-section" id="reporte">
+  <div class="lead-card">
+    <div class="card-title">Reporte gratuito</div>
+    <h2>Recibe el análisis completo en tu correo</h2>
+    <p>Te enviamos un resumen detallado de tu valuación con contexto de mercado y recomendaciones iniciales para preparar tu empresa.</p>
+
+    <div id="lead-form">
+      <div class="field-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+        <div class="field" style="margin:0">
+          <label>Nombre</label>
+          <input type="text" id="lead-nombre" placeholder="Tu nombre">
+        </div>
+        <div class="field" style="margin:0">
+          <label>Email</label>
+          <input type="email" id="lead-email" placeholder="correo@empresa.com">
+        </div>
+      </div>
+      <div class="field-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+        <div class="field" style="margin:0">
+          <label>Empresa</label>
+          <input type="text" id="lead-empresa" placeholder="Nombre de tu empresa">
+        </div>
+        <div class="field" style="margin:0">
+          <label>Cargo</label>
+          <select id="lead-cargo">
+            <option value="dueno">Dueño / Fundador</option>
+            <option value="director">Director General</option>
+            <option value="cfo">Director Financiero</option>
+            <option value="socio">Socio</option>
+            <option value="otro">Otro</option>
+          </select>
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:16px">
+        <label>¿Están considerando una venta o inversión?</label>
+        <select id="lead-venta">
+          <option value="no">No por ahora</option>
+          <option value="explorando">Explorando opciones</option>
+          <option value="1-2">En los próximos 1–2 años</option>
+          <option value="activo">Proceso activo</option>
+        </select>
+      </div>
+      <button class="btn-submit" onclick="submitLead()">Enviar y recibir mi reporte</button>
+      <p class="privacy-note">Tu información es confidencial. Nunca la compartimos con terceros sin tu autorización.</p>
+    </div>
+
+    <div class="success-msg" id="success-msg">
+      <div class="sm-icon">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10l5 5 7-8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h3>Listo — recibimos tu solicitud</h3>
+      <p>Recibirás el reporte en menos de 24 horas. Si tu caso es relevante para nuestro equipo, un especialista te contactará directamente.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section">
+  <div class="section-label">Preguntas frecuentes</div>
+  <h2 class="section-title" style="font-size:clamp(24px,3vw,32px);margin-bottom:32px">Lo que nos preguntan</h2>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">¿Qué tan precisa es esta herramienta?</div>
+    <div class="faq-a">Esta calculadora ofrece un rango orientativo basado en múltiplos de mercado públicos y metodologías estándar de valuación. Es útil para tener una primera referencia, entender el orden de magnitud del valor de tu empresa, y preparar conversaciones con potenciales inversionistas o compradores. Para una valuación formal con validez legal o para una transacción real, se requiere un proceso más detallado con un especialista.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">¿Qué es el EBITDA y cómo lo calculo?</div>
+    <div class="faq-a">EBITDA son las siglas en inglés de Ganancias antes de Intereses, Impuestos, Depreciación y Amortización. Es básicamente tu utilidad operativa antes de descontar estos conceptos. Una forma rápida de calcularlo: toma tu utilidad neta y súmale los impuestos pagados, los intereses de deuda, y cualquier depreciación o amortización que hayas registrado. Si no tienes el número exacto, usa un estimado de tu margen operativo.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">¿Por qué hay tres métodos diferentes?</div>
+    <div class="faq-a">Porque cada método refleja una perspectiva diferente del valor. Los múltiplos de mercado dicen cuánto pagaría un comprador comparable hoy. El DCF dice cuánto valen los flujos futuros que generará tu empresa. El valor en libros dice cuánto valen los activos netos que tienes hoy. En una transacción real, los compradores y vendedores negocian con los tres en mente.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">¿Mis datos están seguros?</div>
+    <div class="faq-a">Todos los cálculos ocurren directamente en tu navegador. No almacenamos los datos financieros que ingresas en la calculadora. Solo guardamos la información que ingresas voluntariamente en el formulario de contacto, y esta nunca se comparte con terceros sin tu autorización explícita.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">¿Esta herramienta aplica solo para México?</div>
+    <div class="faq-a">Los múltiplos y referencias están calibrados principalmente para el mercado mexicano y latinoamericano, aunque los principios de valuación son universales. Si tienes una empresa en otro país hispanohablante, los resultados son una referencia válida aunque pueden existir variaciones según el mercado local.</div>
+  </div>
+</section>
+
+<footer>
+  <a href="#" class="footer-logo">asterisco<span>*</span></a>
+  <p>Herramienta gratuita de valuación empresarial</p>
+  <p>© 2025 asterisco.io</p>
+</footer>
+
+<script>
+const multiplos = {
+  manufactura:  { ebitda:[4,6],   rev:[0.5,0.9], per:[8,12]  },
+  comercio:     { ebitda:[3,5],   rev:[0.3,0.6], per:[7,11]  },
+  servicios:    { ebitda:[4,7],   rev:[0.6,1.0], per:[9,14]  },
+  tecnologia:   { ebitda:[6,12],  rev:[1.5,3.5], per:[15,25] },
+  construccion: { ebitda:[3,5],   rev:[0.3,0.5], per:[7,10]  },
+  alimentos:    { ebitda:[4,6],   rev:[0.4,0.7], per:[8,12]  },
+  salud:        { ebitda:[5,8],   rev:[0.8,1.4], per:[10,16] },
+  logistica:    { ebitda:[3.5,5.5],rev:[0.4,0.7],per:[8,12]  }
+};
+
+function fmtM(n) {
+  if (n >= 1e9) return '$' + (n/1e9).toFixed(2) + ' mil mdd';
+  if (n >= 1e6) return '$' + (n/1e6).toFixed(2) + ' mdp';
+  return '$' + Math.round(n).toLocaleString('es-MX');
+}
+function v(id) { return parseFloat(document.getElementById(id).value) || 0; }
+
+let lastMultEq = 0, lastDcfEq = 0, lastLibroEq = 0;
+
+function calc() {
+  const rev = v('revenue'), ebitda = v('ebitda'), util = v('utilidad');
+  const act = v('activos'), deuda = v('deuda');
+  const sec = document.getElementById('sector').value;
+  const adj = parseFloat(document.getElementById('anos').value)
+             * parseFloat(document.getElementById('crecimiento').value)
+             * parseFloat(document.getElementById('concentracion').value);
+  const m = multiplos[sec];
+  const margin = rev > 0 ? (ebitda / rev * 100) : 0;
+
+  const eL = ebitda*m.ebitda[0]*adj, eH = ebitda*m.ebitda[1]*adj;
+  const rL = rev*m.rev[0]*adj,       rH = rev*m.rev[1]*adj;
+  const pL = util*m.per[0]*adj,      pH = util*m.per[1]*adj;
+  const eM = (eL+eH)/2, rM = (rL+rH)/2, pM = (pL+pH)/2;
+  lastMultEq = Math.max(0, (eM+rM)/2 - deuda);
+
+  document.getElementById('mult-display').innerHTML = `
+    <div class="metric-row">
+      <div class="metric"><div class="metric-val">${fmtM(eM)}</div><div class="metric-lbl">EV/EBITDA<br>${m.ebitda[0]}x–${m.ebitda[1]}x</div></div>
+      <div class="metric"><div class="metric-val">${fmtM(rM)}</div><div class="metric-lbl">EV/Ingresos<br>${m.rev[0]}x–${m.rev[1]}x</div></div>
+      <div class="metric"><div class="metric-val">${fmtM(pM)}</div><div class="metric-lbl">PER<br>${m.per[0]}x–${m.per[1]}x</div></div>
+    </div>
+    <div class="result-highlight">
+      <div class="rh-lbl">Equity value estimado</div>
+      <div class="rh-val">${fmtM(eL-deuda)} – ${fmtM(eH-deuda)}</div>
+      <div class="rh-lbl" style="margin-top:4px">Margen EBITDA: ${margin.toFixed(1)}%</div>
+    </div>`;
+
+  const g = parseFloat(document.getElementById('dcf-g').value);
+  const r = parseFloat(document.getElementById('dcf-r').value);
+  let fcf = ebitda * 0.75, pv = 0;
+  for (let i = 1; i <= 5; i++) { fcf *= (1+g); pv += fcf / Math.pow(1+r, i); }
+  const tv = fcf*(1+0.03)/(r-0.03);
+  const pvtv = tv / Math.pow(1+r, 5);
+  const ev = pv + pvtv;
+  lastDcfEq = Math.max(0, ev - deuda);
+
+  document.getElementById('dcf-display').innerHTML = `
+    <div class="metric-row">
+      <div class="metric"><div class="metric-val">${fmtM(pv)}</div><div class="metric-lbl">VPN flujos<br>5 años</div></div>
+      <div class="metric"><div class="metric-val">${fmtM(pvtv)}</div><div class="metric-lbl">Valor<br>terminal</div></div>
+      <div class="metric"><div class="metric-val">${fmtM(ev)}</div><div class="metric-lbl">Enterprise<br>value</div></div>
+    </div>
+    <div class="result-highlight">
+      <div class="rh-lbl">Equity value (DCF)</div>
+      <div class="rh-val">${fmtM(lastDcfEq)}</div>
+      <div class="rh-lbl" style="margin-top:4px">Valor terminal: ${Math.round(pvtv/ev*100)}% del EV total</div>
+    </div>`;
+
+  const bookVal = act - deuda;
+  lastLibroEq = Math.max(0, bookVal * (1 + margin/100));
+
+  document.getElementById('libros-display').innerHTML = `
+    <div class="metric-row">
+      <div class="metric"><div class="metric-val">${fmtM(act)}</div><div class="metric-lbl">Activos<br>totales</div></div>
+      <div class="metric"><div class="metric-val">${fmtM(deuda)}</div><div class="metric-lbl">Deuda<br>total</div></div>
+      <div class="metric"><div class="metric-val">${fmtM(bookVal)}</div><div class="metric-lbl">Patrimonio<br>neto</div></div>
+    </div>
+    <div class="result-highlight">
+      <div class="rh-lbl">Valor en libros ajustado por rentabilidad</div>
+      <div class="rh-val">${fmtM(lastLibroEq)}</div>
+      <div class="rh-lbl" style="margin-top:4px">Referencia mínima conservadora</div>
+    </div>`;
+
+  const consensus = lastMultEq*0.5 + lastDcfEq*0.4 + lastLibroEq*0.1;
+  document.getElementById('resumen-display').innerHTML = `
+    <div class="consensus-row">
+      <div class="consensus-item"><div class="cv">${fmtM(lastMultEq)}</div><div class="cl">Múltiplos (50%)</div></div>
+      <div class="consensus-item"><div class="cv">${fmtM(lastDcfEq)}</div><div class="cl">DCF (40%)</div></div>
+      <div class="consensus-item"><div class="cv">${fmtM(lastLibroEq)}</div><div class="cl">Libros (10%)</div></div>
+    </div>
+    <div class="result-highlight">
+      <div class="rh-lbl">Rango de valuación estimado</div>
+      <div class="rh-val">${fmtM(consensus*0.8)} – ${fmtM(consensus*1.25)}</div>
+      <div class="rh-lbl" style="margin-top:4px">Consenso ponderado: ${fmtM(consensus)}</div>
+    </div>`;
+}
+
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-'+id).style.display = 'block';
+  btn.classList.add('active');
+}
+
+function toggleFaq(el) {
+  el.closest('.faq-item').classList.toggle('open');
+}
+
+function submitLead() {
+  const nombre = document.getElementById('lead-nombre').value.trim();
+  const email  = document.getElementById('lead-email').value.trim();
+  if (!nombre || !email) { alert('Por favor ingresa tu nombre y correo electrónico.'); return; }
+  document.getElementById('lead-form').style.display = 'none';
+  document.getElementById('success-msg').style.display = 'block';
+}
+
+calc();
+</script>
+</body>
+</html>
