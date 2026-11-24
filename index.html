@@ -361,6 +361,10 @@
   .footer-logo span { color: var(--teal); }
   footer p { font-size: 12px; color: var(--ink3); }
 </style>
+<script>
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 
@@ -630,7 +634,7 @@
 <footer>
   <a href="#" class="footer-logo">asterisco<span>*</span></a>
   <p>Herramienta gratuita de valuación empresarial</p>
-  <p>© 2025 asterisco.io</p>
+  <p>© <span id="footer-year">2026</span> asterisco.io</p>
 </footer>
 
 <script>
@@ -787,6 +791,7 @@ async function submitLead() {
 }
 
 calc();
+document.getElementById('footer-year').textContent = new Date().getFullYear();
 </script>
 </body>
 </html>
